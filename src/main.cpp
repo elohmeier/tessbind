@@ -7,15 +7,15 @@ using tesseract::TessBaseAPI;
 
 int add(int i, int j) { return i + j; }
 
-PYBIND11_MODULE(example, m) {
-  m.doc() = "pybind11 example plugin"; // optional module docstring
+PYBIND11_MODULE(tessbind, m) {
+  m.doc() = "pybind11 tessbind plugin"; // optional module docstring
 
   m.def("apiVersion", &tesseract::TessBaseAPI::Version,
         "Tesseract API version as seen in the library");
 
   m.def("add", &add, "A function that adds two numbers");
 
-  py::class_<TessBaseAPI>(m, "Pysseract")
+  py::class_<TessBaseAPI>(m, "Tessbind")
       .def(py::init([](const char *datapath, const char *language) {
              TessBaseAPI *api = new (TessBaseAPI);
              api->Init(datapath, language);

@@ -8,9 +8,16 @@
     in
     {
       overlay = final: prev: {
+        custom-python3 = prev.python3.override {
+          packageOverrides= self: super: {
+tessbind = self.callPackage ./default.nix { };
+            };
+        };
+
         python3-venv = prev.python3.withPackages (ps: [
           ps.pybind11
           ps.opencv4
+          ps.pip
         ]);
         tesseract5-unwrapped = final.callPackage ./tesseract5.nix {
           inherit (final.darwin.apple_sdk_11_0.frameworks) Accelerate CoreGraphics CoreVideo;
@@ -19,12 +26,10 @@
 
       packages = forAllSystems (system: with import nixpkgs { inherit system; overlays = [ self.overlay ]; }; {
         inherit python3-venv;
+        default = custom-python3.pkgs.tessbind;
       });
 
       devShell = forAllSystems (system: with import nixpkgs { inherit system; overlays = [ self.overlay ]; }; pkgs.mkShell {
-
-        buildInputs = [
-        ];
         packages = [
           pkgs.cmake
           pkgs.leptonica
