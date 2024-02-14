@@ -2,4 +2,18 @@
 
 from build import example
 
+import cv2
+
 print(example.add(1, 2))
+
+img = cv2.imread("hello.png")
+_, buffer = cv2.imencode(".jpg", img)
+
+c = example.Pysseract("/Users/enno/repos/tessdata_convexio/data", "eng")
+c.SetImageFromBytes(buffer.tobytes())
+
+print(c.utf8Text)
+
+c.SetImageFromPath("hello.png")
+
+print(c.utf8Text)

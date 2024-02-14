@@ -10,6 +10,7 @@
       overlay = final: prev: {
         python3-venv = prev.python3.withPackages (ps: [
           ps.pybind11
+          ps.opencv4
         ]);
         tesseract5-unwrapped = final.callPackage ./tesseract5.nix {
           inherit (final.darwin.apple_sdk_11_0.frameworks) Accelerate CoreGraphics CoreVideo;
