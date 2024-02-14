@@ -4,4 +4,8 @@ project('tessbind', 'cpp',
 
 pymod = import('python')
 py = pymod.find_installation('python3')
-py.extension_module('example', sources : 'example.cpp', dependencies : dependency('python3'))
+py.extension_module('example', sources : 'example.cpp', dependencies : [
+  dependency('python3'),
+  dependency('lept'),
+  dependency('tesseract'),
+  ])
