@@ -33,6 +33,9 @@ PYBIND11_MODULE(tessbind, m) {
       .def_property_readonly(
           "utf8Text", &TessBaseAPI::GetUTF8Text,
           R"pbdoc(Read-only: Return all identified text concatenated into a UTF-8 string)pbdoc")
+      .def_property_readonly(
+          "allWordConfidences", &TessBaseAPI::AllWordConfidences,
+            R"pbdoc(Read-only: Return all word confidences)pbdoc")
       .def(
           "SetImageFromPath",
           [](TessBaseAPI &api, const char *imgpath) {
