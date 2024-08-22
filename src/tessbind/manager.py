@@ -30,20 +30,30 @@ class TessbindManager:
     lang: str
     """The language used for OCR."""
 
-    def __init__(self, tessdata_prefix: str | None = None, lang: str = "eng") -> None:
+    def __init__(
+        self,
+        tessdata_prefix: str | None = None,
+        lang: str = "eng",
+        page_seg_mode: m.PageSegMode | None = None,
+    ) -> None:
         """Initialize the TessbindManager.
 
         Args:
             tessdata_prefix (Optional[str]): The path to the Tesseract data directory.
                 If None, it will try to use the TESSDATA_PREFIX environment variable.
             lang (str): The language to use for OCR. Defaults to "eng".
+            page_seg_mode (Optional[PageSegMode]): The page segmentation mode to use by default.
         """
         if tessdata_prefix is None:
             tessdata_prefix = get_tessdata_prefix()
 
         self.tessdata_prefix = tessdata_prefix
         self.lang = lang
+
         self._api = m.TessBaseAPI(self.tessdata_prefix, self.lang)
+
+        if page_seg_mode is not None:
+            self.page_seg_mode = page_seg_mode
 
     def __enter__(self) -> TessbindManager:
         """Enter the runtime context and initialize the Tessbind object.
