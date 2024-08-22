@@ -62,7 +62,8 @@ class TessbindManager:
         Returns:
             tuple[str, int]: A tuple containing the OCR text result and the confidence score (0-100).
         """
-        self._api.set_image_bytes(img_bytes)
+        self._api.set_image_from_bytes(img_bytes)
+
         ret = self._api.recognize()
 
         if ret != 0:

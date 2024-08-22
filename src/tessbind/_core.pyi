@@ -58,7 +58,7 @@ class TessBaseAPI:
         Set the page segmentation mode.
         """
 
-    def set_image_bytes(self, content: bytes) -> None:
+    def set_image_from_bytes(self, content: bytes) -> None:
         """
         Set the image data for OCR processing.
 

@@ -25,7 +25,8 @@ def test_lowlevel_ocr():
 
     tb = m.TessBaseAPI(tessdata, "eng")
 
-    tb.set_image_bytes(sample_file.read_bytes())
+    tb.set_image_from_bytes(sample_file.read_bytes())
+
     res = tb.recognize()
     assert res == 0
 

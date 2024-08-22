@@ -35,8 +35,11 @@ PYBIND11_MODULE(_core, m) {
 
   py::class_<TessBaseAPI>(m, "TessBaseAPI")
       .def(py::init([](const char *datapath, const char *language) {
-             TessBaseAPI *api = new (TessBaseAPI);
-             api->Init(datapath, language);
+             TessBaseAPI *api = new TessBaseAPI();
+             if (api->Init(datapath, language) != 0) {
+               delete api;
+               throw std::runtime_error("Failed to initialize Tesseract");
+             }
              return std::unique_ptr<TessBaseAPI>(api);
            }),
            py::arg("datapath"), py::arg("language"))
@@ -48,24 +51,32 @@ PYBIND11_MODULE(_core, m) {
           &TessBaseAPI::SetPageSegMode,
           R"pbdoc(This attribute can be used to get or set the page segmentation mode used by the tesseract model)pbdoc")
       .def_property_readonly(
-          "utf8_text", &TessBaseAPI::GetUTF8Text,
-          R"pbdoc(Read-only: Return all identified text concatenated into a UTF-8 string)pbdoc")
+          "utf8_text",
+          [](TessBaseAPI &api) {
+            char *text = api.GetUTF8Text();
+            if (!text) {
+              throw std::runtime_error("Failed to get UTF8 text");
+            }
+            std::string result(text);
+            delete[] text;
+            return result;
+          },
+          "Return all identified text concatenated into a UTF-8 string")
       .def_property_readonly(
           "all_word_confidences", &TessBaseAPI::AllWordConfidences,
           R"pbdoc(Read-only: Return all word confidences)pbdoc")
       .def(
-          "set_image_bytes",
-          [](TessBaseAPI *api, std::string &image_data) {
-            const l_uint8 *data =
-                reinterpret_cast<const l_uint8 *>(image_data.data());
-            size_t size = image_data.size();
-
-            Pix *image = pixReadMem(data, size);
-            api->SetImage(image);
-
+          "set_image_from_bytes",
+          [](TessBaseAPI &api, const std::string &image_bytes) {
+            Pix *image = pixReadMem((unsigned char *)image_bytes.data(),
+                                    image_bytes.size());
+            if (!image) {
+              throw std::runtime_error("Failed to read image from bytes");
+            }
+            api.SetImage(image);
             pixDestroy(&image);
           },
-          py::arg("image_data"), "Perform OCR on the given image content")
+          py::arg("image_bytes"), "Read an image from a string of bytes")
       .def(
           "recognize", [](TessBaseAPI *api) { return api->Recognize(nullptr); },
           "Recognize the text in the image set by SetImage");
