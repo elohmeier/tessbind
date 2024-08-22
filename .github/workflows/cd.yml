@@ -44,6 +44,20 @@ jobs:
         os: [ubuntu-24.04, macos-13, macos-14]
 
     steps:
+      - name: Install dependencies on Linux
+        run: |
+          sudo apt-get install libleptonica-dev libtesseract-dev -y
+          sudo apt-get --no-install-recommends install tesseract-ocr-eng -y
+        if: runner.os == 'Linux'
+
+      - name: Install dependencies on macOS
+        run: |
+          brew install leptonica tesseract
+          echo 'CPPFLAGS="-I/opt/homebrew/include"' >> $GITHUB_ENV
+          echo 'LDFLAGS="-L/opt/homebrew/lib"' >> $GITHUB_ENV
+          echo 'PKG_CONFIG_PATH="/opt/homebrew/lib/pkgconfig:$PKG_CONFIG_PATH"' >> $GITHUB_ENV
+        if: runner.os == 'macOS'
+
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
