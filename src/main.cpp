@@ -2,56 +2,73 @@
 #include <pybind11/pybind11.h>
 #include <tesseract/baseapi.h>
 
-namespace py = pybind11;
 using tesseract::PageSegMode;
 using tesseract::TessBaseAPI;
 
 int add(int i, int j) { return i + j; }
 
-PYBIND11_MODULE(tessbind, m) {
-  m.doc() = "pybind11 tessbind plugin"; // optional module docstring
+namespace py = pybind11;
 
-  m.def("apiVersion", &tesseract::TessBaseAPI::Version,
+PYBIND11_MODULE(_core, m) {
+  m.doc() = R"pbdoc(
+      Pybind11 tessbind plugin
+      -----------------------
+      .. currentmodule:: python_example
+      .. autosummary::
+         :toctree: _generate
+         add
+         subtract
+  )pbdoc";
+
+  m.def("add", &add, R"pbdoc(
+      Add two numbers
+      Some other explanation about the add function.
+  )pbdoc");
+
+  m.def("subtract", [](int i, int j) { return i - j; }, R"pbdoc(
+      Subtract two numbers
+      Some other explanation about the subtract function.
+  )pbdoc");
+
+  m.def("api_version", &tesseract::TessBaseAPI::Version,
         "Tesseract API version as seen in the library");
 
-  m.def("add", &add, "A function that adds two numbers");
-
-  py::class_<TessBaseAPI>(m, "Tessbind")
+  py::class_<TessBaseAPI>(m, "TessBaseAPI")
       .def(py::init([](const char *datapath, const char *language) {
              TessBaseAPI *api = new (TessBaseAPI);
              api->Init(datapath, language);
              return std::unique_ptr<TessBaseAPI>(api);
            }),
            py::arg("datapath"), py::arg("language"))
-      .def("End", &TessBaseAPI::End,
+      .def("end", &TessBaseAPI::End,
            "Close down tesseract and free up all memory, after which the "
            "instance should not be reused.")
       .def_property(
-          "pageSegMode", &TessBaseAPI::GetPageSegMode,
+          "page_seg_mode", &TessBaseAPI::GetPageSegMode,
           &TessBaseAPI::SetPageSegMode,
           R"pbdoc(This attribute can be used to get or set the page segmentation mode used by the tesseract model)pbdoc")
       .def_property_readonly(
-          "utf8Text", &TessBaseAPI::GetUTF8Text,
+          "utf8_text", &TessBaseAPI::GetUTF8Text,
           R"pbdoc(Read-only: Return all identified text concatenated into a UTF-8 string)pbdoc")
       .def_property_readonly(
-          "allWordConfidences", &TessBaseAPI::AllWordConfidences,
-            R"pbdoc(Read-only: Return all word confidences)pbdoc")
+          "all_word_confidences", &TessBaseAPI::AllWordConfidences,
+          R"pbdoc(Read-only: Return all word confidences)pbdoc")
       .def(
-          "SetImageFromPath",
-          [](TessBaseAPI &api, const char *imgpath) {
-            Pix *image = pixRead(imgpath);
-            api.SetImage(image);
+          "set_image_bytes",
+          [](TessBaseAPI *api, std::string &image_data) {
+            const l_uint8 *data =
+                reinterpret_cast<const l_uint8 *>(image_data.data());
+            size_t size = image_data.size();
+
+            Pix *image = pixReadMem(data, size);
+            api->SetImage(image);
+
+            pixDestroy(&image);
           },
-          py::arg("imgpath"),
-          "Read an image from a given fully-qualified file path")
+          py::arg("image_data"), "Perform OCR on the given image content")
       .def(
-          "SetImageFromBytes",
-          [](TessBaseAPI &api, const std::string &bytes) {
-            Pix *image =
-                pixReadMem((unsigned char *)bytes.data(), bytes.size());
-            api.SetImage(image);
-          },
-          py::arg("bytes"), "Read an image from a string of bytes");
+          "recognize", [](TessBaseAPI *api) { return api->Recognize(nullptr); },
+          "Recognize the text in the image set by SetImage");
 
   py::enum_<PageSegMode>(m, "PageSegMode",
                          "Enumeration of page segmentation settings")

@@ -1,0 +1,12 @@
+# Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
+_commit: 2024.08.19
+_src_path: gh:scientific-python/cookie
+backend: pybind11
+email: info@nerdworks.de
+full_name: Enno Richter
+license: Apache
+org: elohmeier
+project_name: tessbind
+project_short_description: Tesseract pybind11 bindings
+url: https://github.com/elohmeier/tessbind
+vcs: true

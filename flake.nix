@@ -1,44 +1,39 @@
 {
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.11";
+  description = "A Nix-flake-based Python development environment";
 
-  outputs = { self, nixpkgs }:
+  inputs.nixpkgs.url = "https://flakehub.com/f/NixOS/nixpkgs/0.1.*.tar.gz";
+
+  outputs =
+    { self, nixpkgs }:
     let
-      supportedSystems = [ "aarch64-darwin" "aarch64-linux" "x86_64-linux" ];
-      forAllSystems = f: nixpkgs.lib.genAttrs supportedSystems (system: f system);
+      supportedSystems = [
+        "x86_64-linux"
+        "aarch64-linux"
+        "x86_64-darwin"
+        "aarch64-darwin"
+      ];
+      forEachSupportedSystem =
+        f: nixpkgs.lib.genAttrs supportedSystems (system: f { pkgs = import nixpkgs { inherit system; }; });
     in
     {
-      overlay = final: prev: {
-        custom-python3 = prev.python3.override {
-          packageOverrides= self: super: {
-tessbind = self.callPackage ./default.nix { };
-            };
-        };
+      devShells = forEachSupportedSystem (
+        { pkgs }:
+        {
+          default = pkgs.mkShell {
+            venvDir = ".venv";
+            packages = with pkgs; [
+              leptonica
+              python312
+              python312Packages.venvShellHook
+              tesseract5.tesseractBase
+            ];
 
-        python3-venv = prev.python3.withPackages (ps: [
-          ps.pybind11
-          ps.opencv4
-          ps.pip
-        ]);
-        tesseract5-unwrapped = final.callPackage ./tesseract5.nix {
-          inherit (final.darwin.apple_sdk_11_0.frameworks) Accelerate CoreGraphics CoreVideo;
-        };
-      };
-
-      packages = forAllSystems (system: with import nixpkgs { inherit system; overlays = [ self.overlay ]; }; {
-        inherit python3-venv;
-        default = custom-python3.pkgs.tessbind;
-      });
-
-      devShell = forAllSystems (system: with import nixpkgs { inherit system; overlays = [ self.overlay ]; }; pkgs.mkShell {
-        packages = [
-          pkgs.cmake
-          pkgs.leptonica
-          pkgs.meson
-          pkgs.ninja
-          pkgs.pkg-config
-          pkgs.python3-venv
-          pkgs.tesseract5-unwrapped
-        ];
-      });
+            TESSDATA_PREFIX = pkgs.runCommandNoCC "tessdata-eng" { } ''
+              mkdir -p $out
+              cp "${pkgs.tesseract5.languages.eng}" $out/eng.traineddata
+            '';
+          };
+        }
+      );
     };
 }
