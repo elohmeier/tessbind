@@ -44,7 +44,7 @@ def get_tessdata_prefix() -> str:
 
         for path in root.iterdir():
             if path.is_dir() and path.name.startswith("5."):
-                return str(path / "tessdata")
+                return str(path / "share/tessdata")
 
         return None
 
