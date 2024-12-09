@@ -9,6 +9,6 @@ from __future__ import annotations
 from ._core import PageSegMode
 from .manager import TessbindManager
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 
 __all__ = ["__version__", "PageSegMode", "TessbindManager"]
