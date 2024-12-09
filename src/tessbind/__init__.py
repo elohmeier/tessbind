@@ -7,7 +7,8 @@ tessbind: Tesseract pybind11 bindings
 from __future__ import annotations
 
 from ._core import PageSegMode
-from ._version import version as __version__
 from .manager import TessbindManager
+
+__version__ = "0.0.6"
 
 __all__ = ["__version__", "PageSegMode", "TessbindManager"]
