@@ -158,3 +158,6 @@ Thumbs.db
 *.swp
 
 .python-version
+
+result
+result-*
