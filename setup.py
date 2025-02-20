@@ -5,8 +5,8 @@
 
 from __future__ import annotations
 
-import platform
 import subprocess
+from pathlib import Path
 
 from setuptools import setup  # isort:skip
 from setuptools.command.build_ext import build_ext
@@ -19,14 +19,19 @@ from pybind11.setup_helpers import Pybind11Extension  # isort:skip
 #   reproducible builds (https://github.com/pybind/python_example/pull/53)
 
 
-def get_lib_dir() -> str:
-    """Get the library directory name based on platform."""
-    if platform.system() == "Linux" and platform.machine() == "x86_64":
-        return "lib64"
-    return "lib"
+def get_lib_dirs() -> dict[str, str]:
+    """Get the library directory names from the build process."""
+    lib_dirs = {"ZLIB_LIB": "lib", "LIBPNG_LIB": "lib", "LEPTONICA_LIB": "lib", "TESSERACT_LIB": "lib"}
+    try:
+        with Path("lib_dirs.txt").open() as f:
+            for line in f:
+                key, value = line.strip().split("=")
+                lib_dirs[key] = value
+    except FileNotFoundError:
+        pass  # Use defaults
+    return lib_dirs
 
-
-lib_dir = get_lib_dir()
+lib_dirs = get_lib_dirs()
 
 ext_modules = [
     Pybind11Extension(
@@ -39,10 +44,10 @@ ext_modules = [
         ],
         extra_objects=[
             # do not change the ordering of these objects
-            f"extern/tesseract/tesseract-install/{lib_dir}/libtesseract.a",
-            "extern/leptonica/leptonica-install/lib/libleptonica.a",  # leptonica always uses `lib`
-            f"extern/libpng/libpng-install/{lib_dir}/libpng16.a",
-            f"extern/zlib/zlib-install/{lib_dir}/libz.a",
+            f"extern/tesseract/tesseract-install/{lib_dirs['TESSERACT_LIB']}/libtesseract.a",
+            f"extern/leptonica/leptonica-install/{lib_dirs['LEPTONICA_LIB']}/libleptonica.a",
+            f"extern/libpng/libpng-install/{lib_dirs['LIBPNG_LIB']}/libpng16.a",
+            f"extern/zlib/zlib-install/{lib_dirs['ZLIB_LIB']}/libz.a",
         ],
     ),
 ]

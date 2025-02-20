@@ -7,24 +7,30 @@ if [[ "$OSTYPE" == "linux"* ]]; then
     export CXXFLAGS="-fPIC"
 fi
 
+# Initialize lib directory names (will be updated if lib64 is detected)
+ZLIB_LIB="lib"
+LIBPNG_LIB="lib"
+LEPTONICA_LIB="lib"
+TESSERACT_LIB="lib"
+
 # ---------------------------------------
 # 1. Build & install zlib
 # ---------------------------------------
 pushd extern/zlib
 mkdir -p build
 cd build
-# Determine lib directory
-if [[ "$OSTYPE" == "linux"* ]] && [[ "$(uname -m)" == "x86_64" ]]; then
-    LIB_DIR="lib64"
-else
-    LIB_DIR="lib"
-fi
 
 cmake \
     -DCMAKE_INSTALL_PREFIX="$(pwd)/../zlib-install" \
     -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
     ..
 cmake --build . --target install
+
+# Detect actual lib directory
+if [ -d "../zlib-install/lib64" ]; then
+    ZLIB_LIB="lib64"
+fi
+
 popd
 
 # ---------------------------------------
@@ -39,10 +45,15 @@ cmake \
     -DPNG_STATIC=ON \
     -DPNG_TESTS=OFF \
     -DZLIB_ROOT="$(pwd)/../../zlib/zlib-install" \
-    -DZLIB_LIBRARY="$(pwd)/../../zlib/zlib-install/${LIB_DIR}/libz.a" \
+    -DZLIB_LIBRARY="$(pwd)/../../zlib/zlib-install/${ZLIB_LIB}/libz.a" \
     -DZLIB_INCLUDE_DIR="$(pwd)/../../zlib/zlib-install/include" \
     ..
 cmake --build . --target install
+
+# Detect actual lib directory
+if [ -d "../libpng-install/lib64" ]; then
+    LIBPNG_LIB="lib64"
+fi
 popd
 
 # ---------------------------------------
@@ -64,12 +75,17 @@ cmake \
     -DENABLE_TIFF=OFF \
     -DENABLE_WEBP=OFF \
     -DENABLE_OPENJPEG=OFF \
-    -DPNG_LIBRARY="$(pwd)/../../libpng/libpng-install/${LIB_DIR}/libpng.a" \
+    -DPNG_LIBRARY="$(pwd)/../../libpng/libpng-install/${LIBPNG_LIB}/libpng.a" \
     -DPNG_PNG_INCLUDE_DIR="$(pwd)/../../libpng/libpng-install/include" \
-    -DZLIB_LIBRARY="$(pwd)/../../zlib/zlib-install/${LIB_DIR}/libz.a" \
+    -DZLIB_LIBRARY="$(pwd)/../../zlib/zlib-install/${ZLIB_LIB}/libz.a" \
     -DZLIB_INCLUDE_DIR="$(pwd)/../../zlib/zlib-install/include" \
     ..
 cmake --build . --target install
+
+# Detect actual lib directory
+if [ -d "../leptonica-install/lib64" ]; then
+    LEPTONICA_LIB="lib64"
+fi
 popd
 
 # ---------------------------------------
@@ -86,7 +102,15 @@ cmake \
     -DDISABLE_CURL=ON \
     -DDISABLE_TIFF=ON \
     -DDISABLE_ARCHIVE=ON \
-    -DLeptonica_DIR="$(pwd)/../../leptonica/leptonica-install/lib/cmake/leptonica" \
+    -DLeptonica_DIR="$(pwd)/../../leptonica/leptonica-install/${LEPTONICA_LIB}/cmake/leptonica" \
     ..
 cmake --build . --target install
 popd
+
+# Create a file to store final lib directory names
+cat >lib_dirs.txt <<EOF
+ZLIB_LIB=${ZLIB_LIB}
+LIBPNG_LIB=${LIBPNG_LIB}
+LEPTONICA_LIB=${LEPTONICA_LIB}
+TESSERACT_LIB=${TESSERACT_LIB}
+EOF
