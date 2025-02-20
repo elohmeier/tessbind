@@ -1,3 +1,48 @@
+[project]
+name = "tessbind"
+dynamic = ["version"]
+description = "Tesseract pybind11 bindings"
+readme = "README.md"
+authors = [{ name = "Enno Richter", email = "enno@nerdworks.de" }]
+requires-python = ">=3.8"
+license = { text = "Apache-2.0" }
+dependencies = ["typing-extensions>=4.6;python_version<'3.11'"]
+classifiers = [
+  "Development Status :: 1 - Planning",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: Apache Software License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Scientific/Engineering",
+  "Typing :: Typed",
+]
+
+[project.urls]
+Documentation = "https://tessbind.readthedocs.io/"
+"Bug Tracker" = "https://github.com/elohmeier/tessbind/issues"
+Discussions = "https://github.com/elohmeier/tessbind/discussions"
+Changelog = "https://github.com/elohmeier/tessbind/releases"
+
+[project.optional-dependencies]
+dev = ["pytest>=6", "pytest-cov>=3"]
+docs = [
+  "furo>=2023.08.17",
+  "myst-parser>=0.13",
+  "sphinx>=7.0",
+  "sphinx-autodoc-typehints",
+  "sphinx-copybutton",
+]
+test = ["pytest>=6", "pytest-cov>=3"]
+
 [build-system]
 requires = ["setuptools>=42", "setuptools_scm[toml]>=3.4", "pybind11"]
 build-backend = "setuptools.build_meta"
@@ -8,8 +53,6 @@ ignore = [
   ".copier-answers.yml",
   ".envrc",
   ".github/**",
-  ".pre-commit-config.yaml",
-  ".readthedocs.yaml",
   "docs/**",
   "flake.lock",
   "flake.nix",

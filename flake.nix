@@ -20,11 +20,8 @@
         { pkgs }:
         {
           default = pkgs.mkShell {
-            venvDir = ".venv";
             packages = with pkgs; [
               leptonica
-              python312
-              python312Packages.venvShellHook
               tesseract5.tesseractBase
             ];
 
