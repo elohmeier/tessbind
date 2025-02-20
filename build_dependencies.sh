@@ -12,10 +12,17 @@ fi
 pushd extern/leptonica
 mkdir -p build
 cd build
+# Add -fPIC for Linux builds
+if [[ "$OSTYPE" == "linux"* ]]; then
+    export CFLAGS="-fPIC"
+    export CXXFLAGS="-fPIC"
+fi
+
 cmake \
     -DCMAKE_INSTALL_PREFIX="$(pwd)/../leptonica-install" \
     -DBUILD_PROG=OFF \
     -DBUILD_SHARED_LIBS=OFF \
+    -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
     -DENABLE_ZLIB=OFF \
     -DENABLE_GIF=OFF \
     -DENABLE_JPEG=OFF \
@@ -37,6 +44,7 @@ cd build
 cmake \
     -DCMAKE_INSTALL_PREFIX="$(pwd)/../tesseract-install" \
     -DBUILD_TRAINING_TOOLS=OFF \
+    -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
     -DDISABLE_CURL=ON \
     -DDISABLE_TIFF=ON \
     -DDISABLE_ARCHIVE=ON \
