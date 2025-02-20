@@ -3,3 +3,9 @@ graft tests
 
 include LICENSE README.md pyproject.toml setup.py .git_archival.txt
 global-exclude __pycache__ *.py[cod] .venv
+
+include build_dependencies.sh
+
+# Include the built dependencies
+graft extern/leptonica/leptonica-install
+graft extern/tesseract/tesseract-install
