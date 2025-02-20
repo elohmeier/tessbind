@@ -8,4 +8,5 @@ include build_dependencies.sh
 
 # Include the build dependencies
 graft extern/leptonica
+graft extern/libpng
 graft extern/tesseract
