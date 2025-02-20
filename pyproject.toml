@@ -68,7 +68,10 @@ test-command = "pytest -m \"not slow\" {project}/tests"
 test-extras = ["test"]
 
 [tool.cibuildwheel.linux]
-before-test = ["yum install -y tesseract-langpack-eng"]
+before-test = [
+  "mkdir -p /usr/share/tesseract-ocr/5/tessdata",
+  "curl -L -o /usr/share/tesseract-ocr/5/tessdata/eng.traineddata https://github.com/tesseract-ocr/tessdata_fast/raw/refs/heads/main/eng.traineddata",
+]
 
 [tool.cibuildwheel.macos]
 before-test = ["brew install tesseract"]
