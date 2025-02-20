@@ -6,8 +6,6 @@
 from __future__ import annotations
 
 import subprocess
-import sys
-from pathlib import Path
 
 from setuptools import setup  # isort:skip
 from setuptools.command.build_ext import build_ext
@@ -29,10 +27,12 @@ ext_modules = [
             "extern/tesseract/tesseract-install/include",
         ],
         extra_objects=[
+            # do not change the ordering of these objects
+            "extern/tesseract/tesseract-install/lib/libtesseract.a",
             "extern/leptonica/leptonica-install/lib/libleptonica.a",
             "extern/libpng/libpng-install/lib/libpng16.a",
-            "extern/tesseract/tesseract-install/lib/libtesseract.a",
         ],
+        libraries=["z"],  # Link against zlib library
     ),
 ]
 

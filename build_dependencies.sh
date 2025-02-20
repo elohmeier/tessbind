@@ -1,6 +1,12 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Add -fPIC for Linux builds
+if [[ "$OSTYPE" == "linux"* ]]; then
+    export CFLAGS="-fPIC"
+    export CXXFLAGS="-fPIC"
+fi
+
 # ---------------------------------------
 # 1. Build & install libpng
 # ---------------------------------------
@@ -22,18 +28,13 @@ popd
 pushd extern/leptonica
 mkdir -p build
 cd build
-# Add -fPIC for Linux builds
-if [[ "$OSTYPE" == "linux"* ]]; then
-    export CFLAGS="-fPIC"
-    export CXXFLAGS="-fPIC"
-fi
 
 cmake \
     -DCMAKE_INSTALL_PREFIX="$(pwd)/../leptonica-install" \
     -DBUILD_PROG=OFF \
     -DBUILD_SHARED_LIBS=OFF \
     -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
-    -DENABLE_ZLIB=OFF \
+    -DENABLE_ZLIB=ON \
     -DENABLE_GIF=OFF \
     -DENABLE_JPEG=OFF \
     -DENABLE_TIFF=OFF \
