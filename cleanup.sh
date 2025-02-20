@@ -9,8 +9,9 @@ if [[ "$response" =~ ^[Yy]$ ]]; then
     git clean -fdx
 
     # Clean extern repos
-    pushd extern/tesseract && git clean -fdx && popd || exit 1
     pushd extern/leptonica && git clean -fdx && popd || exit 1
+    pushd extern/libpng && git clean -fdx && popd || exit 1
+    pushd extern/tesseract && git clean -fdx && popd || exit 1
 else
     echo "Cleanup cancelled"
     exit 0
