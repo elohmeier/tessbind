@@ -16,6 +16,12 @@ cmake \
     -DCMAKE_INSTALL_PREFIX="$(pwd)/../leptonica-install" \
     -DBUILD_PROG=OFF \
     -DBUILD_SHARED_LIBS=OFF \
+    -DENABLE_ZLIB=OFF \
+    -DENABLE_GIF=OFF \
+    -DENABLE_JPEG=OFF \
+    -DENABLE_TIFF=OFF \
+    -DENABLE_WEBP=OFF \
+    -DENABLE_OPENJPEG=OFF \
     ${PNG_DIR:+-DPNG_LIBRARY="$PNG_DIR/lib/libpng.dylib"} \
     ${PNG_DIR:+-DPNG_PNG_INCLUDE_DIR="$PNG_DIR/include"} \
     ..
