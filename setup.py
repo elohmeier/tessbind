@@ -5,6 +5,9 @@
 
 from __future__ import annotations
 
+import os
+import sys
+
 from setuptools import setup  # isort:skip
 
 # Available at setup time due to pyproject.toml
@@ -30,6 +33,17 @@ ext_modules = [
         ],
     ),
 ]
+
+
+# Add PNG paths on macOS
+if sys.platform == "darwin":
+    from subprocess import check_output
+
+    png_prefix = check_output(["brew", "--prefix", "libpng"]).decode().strip()
+    for ext in ext_modules:
+        ext.include_dirs.append(os.path.join(png_prefix, "include"))
+        ext.library_dirs.append(os.path.join(png_prefix, "lib"))
+        ext.libraries.append("png")
 
 
 setup(

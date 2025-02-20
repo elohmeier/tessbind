@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Get libpng path on macOS
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    PNG_DIR=$(brew --prefix libpng)
+fi
+
 # ---------------------------------------
 # 1. Build & install leptonica
 # ---------------------------------------
@@ -11,6 +16,8 @@ cmake \
     -DCMAKE_INSTALL_PREFIX="$(pwd)/../leptonica-install" \
     -DBUILD_PROG=OFF \
     -DBUILD_SHARED_LIBS=OFF \
+    ${PNG_DIR:+-DPNG_LIBRARY="$PNG_DIR/lib/libpng.dylib"} \
+    ${PNG_DIR:+-DPNG_PNG_INCLUDE_DIR="$PNG_DIR/include"} \
     ..
 cmake --build . --target install
 popd
