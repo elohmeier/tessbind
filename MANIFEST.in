@@ -6,6 +6,6 @@ global-exclude __pycache__ *.py[cod] .venv
 
 include build_dependencies.sh
 
-# Include the built dependencies
-graft extern/leptonica/leptonica-install
-graft extern/tesseract/tesseract-install
+# Include the build dependencies
+graft extern/leptonica
+graft extern/tesseract
