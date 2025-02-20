@@ -1,0 +1,6 @@
+[submodule "extern/leptonica"]
+	path = extern/leptonica
+	url = https://github.com/DanBloomberg/leptonica.git
+[submodule "extern/tesseract"]
+	path = extern/tesseract
+	url = https://github.com/tesseract-ocr/tesseract.git

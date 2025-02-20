@@ -47,6 +47,8 @@ test = ["pytest>=6", "pytest-cov>=3"]
 requires = ["setuptools>=42", "setuptools_scm[toml]>=3.4", "pybind11"]
 build-backend = "setuptools.build_meta"
 
+[tool.setuptools_scm]
+write_to = "src/tessbind/_version.py"
 
 [tool.check-manifest]
 ignore = [
@@ -59,11 +61,6 @@ ignore = [
   "noxfile.py",
   "src/*/_version.py",
 ]
-
-
-[tool.setuptools_scm]
-write_to = "src/tessbind/_version.py"
-
 
 [tool.cibuildwheel]
 build = "cp312-*"
@@ -156,3 +153,6 @@ messages_control.disable = [
   "missing-function-docstring",
   "wrong-import-position",
 ]
+
+[tool.uv]
+cache-keys = [{ file = "src/main.cpp" }]
