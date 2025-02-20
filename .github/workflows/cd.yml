@@ -52,9 +52,6 @@ jobs:
                   fetch-depth: 0
                   submodules: true
 
-            - name: Build dependencies
-              run: ./build_dependencies.sh
-
             - uses: pypa/cibuildwheel@v2.20
 
             - name: Upload wheels

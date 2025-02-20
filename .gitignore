@@ -140,6 +140,9 @@ cython_debug/
 # setuptools_scm
 src/*/_version.py
 
+# Local tessdata directory
+.tessdata/
+
 
 # ruff
 .ruff_cache/

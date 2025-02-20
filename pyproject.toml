@@ -155,4 +155,4 @@ messages_control.disable = [
 ]
 
 [tool.uv]
-cache-keys = [{ file = "src/main.cpp" }]
+cache-keys = [{ file = "setup.py" }, { file = "src/main.cpp" }]

@@ -19,13 +19,14 @@ ext_modules = [
         "tessbind._core",
         ["src/main.cpp"],
         cxx_std=11,
+        libraries=["leptonica", "tesseract"],
         include_dirs=[
             "extern/leptonica/leptonica-install/include",
             "extern/tesseract/tesseract-install/include",
         ],
-        libraries=[
-            "extern/leptonica/leptonica-install",
-            "extern/tesseract/tesseract-install",
+        library_dirs=[
+            "extern/leptonica/leptonica-install/lib",
+            "extern/tesseract/tesseract-install/lib",
         ],
     ),
 ]
