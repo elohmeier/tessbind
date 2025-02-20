@@ -109,6 +109,7 @@ disallow_incomplete_defs = true
 
 [tool.ruff]
 target-version = "py38"
+exclude = ["extern/**"]
 
 [tool.ruff.lint]
 extend-select = [
