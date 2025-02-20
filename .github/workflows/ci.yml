@@ -41,14 +41,14 @@ jobs:
                   echo 'PKG_CONFIG_PATH="/opt/homebrew/lib/pkgconfig:$PKG_CONFIG_PATH"' >> $GITHUB_ENV
               if: runner.os == 'macOS'
 
-            - uses: actions/checkout@v4
-              with:
-                  fetch-depth: 0
-
             - name: Install the latest version of uv and set the python version
               uses: astral-sh/setup-uv@v5
               with:
                   python-version: ${{ matrix.python-version }}
+
+            - uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
 
             - name: Install package
               run: uv sync --extra test
