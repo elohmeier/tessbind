@@ -1,13 +1,23 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Get libpng path on macOS
-if [[ "$OSTYPE" == "darwin"* ]]; then
-    PNG_DIR=$(brew --prefix libpng)
-fi
+# ---------------------------------------
+# 1. Build & install libpng
+# ---------------------------------------
+pushd extern/libpng
+mkdir -p build
+cd build
+cmake \
+    -DCMAKE_INSTALL_PREFIX="$(pwd)/../libpng-install" \
+    -DPNG_SHARED=OFF \
+    -DPNG_STATIC=ON \
+    -DPNG_TESTS=OFF \
+    ..
+cmake --build . --target install
+popd
 
 # ---------------------------------------
-# 1. Build & install leptonica
+# 2. Build & install leptonica
 # ---------------------------------------
 pushd extern/leptonica
 mkdir -p build
@@ -29,14 +39,14 @@ cmake \
     -DENABLE_TIFF=OFF \
     -DENABLE_WEBP=OFF \
     -DENABLE_OPENJPEG=OFF \
-    ${PNG_DIR:+-DPNG_LIBRARY="$PNG_DIR/lib/libpng.dylib"} \
-    ${PNG_DIR:+-DPNG_PNG_INCLUDE_DIR="$PNG_DIR/include"} \
+    -DPNG_LIBRARY="$(pwd)/../../libpng/libpng-install/lib/libpng.a" \
+    -DPNG_PNG_INCLUDE_DIR="$(pwd)/../../libpng/libpng-install/include" \
     ..
 cmake --build . --target install
 popd
 
 # ---------------------------------------
-# 2. Build & install tesseract (library only)
+# 3. Build & install tesseract (library only)
 # ---------------------------------------
 pushd extern/tesseract
 mkdir -p build
