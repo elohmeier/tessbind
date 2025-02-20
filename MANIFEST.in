@@ -10,3 +10,4 @@ include build_dependencies.sh
 graft extern/leptonica
 graft extern/libpng
 graft extern/tesseract
+graft extern/zlib

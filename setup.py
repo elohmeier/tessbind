@@ -31,8 +31,8 @@ ext_modules = [
             "extern/tesseract/tesseract-install/lib/libtesseract.a",
             "extern/leptonica/leptonica-install/lib/libleptonica.a",
             "extern/libpng/libpng-install/lib/libpng16.a",
+            "extern/zlib/zlib-install/lib/libz.a",
         ],
-        libraries=["z"],  # Link against zlib library
     ),
 ]
 

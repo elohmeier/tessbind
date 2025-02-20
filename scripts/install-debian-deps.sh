@@ -9,7 +9,6 @@ apt update
 apt install -y --no-install-recommends \
     build-essential \
     cmake \
-    git \
-    zlib1g-dev
+    git
 
 echo "You can now use e.g. \`uv sync --extra test --verbose\` to build/install"

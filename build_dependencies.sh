@@ -8,7 +8,20 @@ if [[ "$OSTYPE" == "linux"* ]]; then
 fi
 
 # ---------------------------------------
-# 1. Build & install libpng
+# 1. Build & install zlib
+# ---------------------------------------
+pushd extern/zlib
+mkdir -p build
+cd build
+cmake \
+    -DCMAKE_INSTALL_PREFIX="$(pwd)/../zlib-install" \
+    -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
+    ..
+cmake --build . --target install
+popd
+
+# ---------------------------------------
+# 2. Build & install libpng
 # ---------------------------------------
 pushd extern/libpng
 mkdir -p build
@@ -18,12 +31,15 @@ cmake \
     -DPNG_SHARED=OFF \
     -DPNG_STATIC=ON \
     -DPNG_TESTS=OFF \
+    -DZLIB_ROOT="$(pwd)/../../zlib/zlib-install" \
+    -DZLIB_LIBRARY="$(pwd)/../../zlib/zlib-install/lib/libz.a" \
+    -DZLIB_INCLUDE_DIR="$(pwd)/../../zlib/zlib-install/include" \
     ..
 cmake --build . --target install
 popd
 
 # ---------------------------------------
-# 2. Build & install leptonica
+# 3. Build & install leptonica
 # ---------------------------------------
 pushd extern/leptonica
 mkdir -p build
@@ -35,6 +51,7 @@ cmake \
     -DBUILD_SHARED_LIBS=OFF \
     -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
     -DENABLE_ZLIB=ON \
+    -DENABLE_PNG=ON \
     -DENABLE_GIF=OFF \
     -DENABLE_JPEG=OFF \
     -DENABLE_TIFF=OFF \
@@ -42,12 +59,14 @@ cmake \
     -DENABLE_OPENJPEG=OFF \
     -DPNG_LIBRARY="$(pwd)/../../libpng/libpng-install/lib/libpng.a" \
     -DPNG_PNG_INCLUDE_DIR="$(pwd)/../../libpng/libpng-install/include" \
+    -DZLIB_LIBRARY="$(pwd)/../../zlib/zlib-install/lib/libz.a" \
+    -DZLIB_INCLUDE_DIR="$(pwd)/../../zlib/zlib-install/include" \
     ..
 cmake --build . --target install
 popd
 
 # ---------------------------------------
-# 3. Build & install tesseract (library only)
+# 4. Build & install tesseract (library only)
 # ---------------------------------------
 pushd extern/tesseract
 mkdir -p build
