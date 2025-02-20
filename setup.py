@@ -5,8 +5,8 @@
 
 from __future__ import annotations
 
-import os
 import sys
+from pathlib import Path
 
 from setuptools import setup  # isort:skip
 
@@ -35,14 +35,18 @@ ext_modules = [
 ]
 
 
-# Add PNG paths on macOS
+# Add PNG paths
 if sys.platform == "darwin":
     from subprocess import check_output
 
     png_prefix = check_output(["brew", "--prefix", "libpng"]).decode().strip()
     for ext in ext_modules:
-        ext.include_dirs.append(os.path.join(png_prefix, "include"))
-        ext.library_dirs.append(os.path.join(png_prefix, "lib"))
+        ext.include_dirs.append(str(Path(png_prefix) / "include"))
+        ext.library_dirs.append(str(Path(png_prefix) / "lib"))
+        ext.libraries.append("png")
+elif sys.platform == "linux":
+    # On Linux, libpng-dev installs to system paths
+    for ext in ext_modules:
         ext.libraries.append("png")
 
 
