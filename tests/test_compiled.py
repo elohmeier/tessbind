@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import pytest
+
 import tessbind._core as m
 from tessbind.utils import get_tessdata_prefix
 
@@ -44,6 +46,7 @@ def test_lowlevel_ocr():
     tb.end()
 
 
+@pytest.mark.slow
 def test_many_calls():
     sample_file = Path(__file__).parent / "hello.png"
 
