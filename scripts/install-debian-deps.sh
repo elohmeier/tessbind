@@ -9,6 +9,7 @@ apt update
 apt install -y --no-install-recommends \
     build-essential \
     cmake \
-    git
+    git \
+    tesseract-ocr-eng
 
 echo "You can now use e.g. \`uv sync --extra test --verbose\` to build/install"
