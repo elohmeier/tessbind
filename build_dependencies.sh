@@ -13,6 +13,13 @@ fi
 pushd extern/zlib
 mkdir -p build
 cd build
+# Determine lib directory
+if [[ "$OSTYPE" == "linux"* ]] && [[ "$(uname -m)" == "x86_64" ]]; then
+    LIB_DIR="lib64"
+else
+    LIB_DIR="lib"
+fi
+
 cmake \
     -DCMAKE_INSTALL_PREFIX="$(pwd)/../zlib-install" \
     -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
@@ -32,7 +39,7 @@ cmake \
     -DPNG_STATIC=ON \
     -DPNG_TESTS=OFF \
     -DZLIB_ROOT="$(pwd)/../../zlib/zlib-install" \
-    -DZLIB_LIBRARY="$(pwd)/../../zlib/zlib-install/lib/libz.a" \
+    -DZLIB_LIBRARY="$(pwd)/../../zlib/zlib-install/${LIB_DIR}/libz.a" \
     -DZLIB_INCLUDE_DIR="$(pwd)/../../zlib/zlib-install/include" \
     ..
 cmake --build . --target install
@@ -57,9 +64,9 @@ cmake \
     -DENABLE_TIFF=OFF \
     -DENABLE_WEBP=OFF \
     -DENABLE_OPENJPEG=OFF \
-    -DPNG_LIBRARY="$(pwd)/../../libpng/libpng-install/lib/libpng.a" \
+    -DPNG_LIBRARY="$(pwd)/../../libpng/libpng-install/${LIB_DIR}/libpng.a" \
     -DPNG_PNG_INCLUDE_DIR="$(pwd)/../../libpng/libpng-install/include" \
-    -DZLIB_LIBRARY="$(pwd)/../../zlib/zlib-install/lib/libz.a" \
+    -DZLIB_LIBRARY="$(pwd)/../../zlib/zlib-install/${LIB_DIR}/libz.a" \
     -DZLIB_INCLUDE_DIR="$(pwd)/../../zlib/zlib-install/include" \
     ..
 cmake --build . --target install

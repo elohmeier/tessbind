@@ -5,6 +5,7 @@
 
 from __future__ import annotations
 
+import platform
 import subprocess
 
 from setuptools import setup  # isort:skip
@@ -17,6 +18,16 @@ from pybind11.setup_helpers import Pybind11Extension  # isort:skip
 #   Sort input source files if you glob sources to ensure bit-for-bit
 #   reproducible builds (https://github.com/pybind/python_example/pull/53)
 
+
+def get_lib_dir() -> str:
+    """Get the library directory name based on platform."""
+    if platform.system() == "Linux" and platform.machine() == "x86_64":
+        return "lib64"
+    return "lib"
+
+
+lib_dir = get_lib_dir()
+
 ext_modules = [
     Pybind11Extension(
         "tessbind._core",
@@ -28,10 +39,10 @@ ext_modules = [
         ],
         extra_objects=[
             # do not change the ordering of these objects
-            "extern/tesseract/tesseract-install/lib/libtesseract.a",
-            "extern/leptonica/leptonica-install/lib/libleptonica.a",
-            "extern/libpng/libpng-install/lib/libpng16.a",
-            "extern/zlib/zlib-install/lib/libz.a",
+            f"extern/tesseract/tesseract-install/{lib_dir}/libtesseract.a",
+            "extern/leptonica/leptonica-install/lib/libleptonica.a",  # leptonica always uses `lib`
+            f"extern/libpng/libpng-install/{lib_dir}/libpng16.a",
+            f"extern/zlib/zlib-install/{lib_dir}/libz.a",
         ],
     ),
 ]
