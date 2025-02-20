@@ -63,6 +63,7 @@ ignore = [
 ]
 
 [tool.cibuildwheel]
+archs = ["auto64"]
 build = "cp312-*"
 test-command = "pytest -m \"not slow\" {project}/tests"
 test-extras = ["test"]
