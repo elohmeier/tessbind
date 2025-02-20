@@ -37,6 +37,9 @@ cd build
 cmake \
     -DCMAKE_INSTALL_PREFIX="$(pwd)/../tesseract-install" \
     -DBUILD_TRAINING_TOOLS=OFF \
+    -DDISABLE_CURL=ON \
+    -DDISABLE_TIFF=ON \
+    -DDISABLE_ARCHIVE=ON \
     -DLeptonica_DIR="$(pwd)/../../leptonica/leptonica-install/lib/cmake/leptonica" \
     ..
 cmake --build . --target install
