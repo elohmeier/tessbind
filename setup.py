@@ -32,23 +32,8 @@ ext_modules = [
             "extern/tesseract/tesseract-install/lib/libtesseract.a",
             "extern/leptonica/leptonica-install/lib/libleptonica.a",
         ],
-        # Use dynamic linking for libpng
-        libraries=[
-            "png",
-        ],
     ),
 ]
-
-
-# Add macOS-specific link arguments
-if sys.platform == "darwin":
-    png_prefix = (
-        subprocess.check_output(["brew", "--prefix", "libpng"]).decode().strip()
-    )
-    for ext in ext_modules:
-        # Add PNG paths
-        ext.include_dirs.append(str(Path(png_prefix) / "include"))
-        ext.library_dirs.append(str(Path(png_prefix) / "lib"))
 
 
 class CustomBuildExt(build_ext):
