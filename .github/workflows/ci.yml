@@ -30,6 +30,7 @@ jobs:
             - name: Install the latest version of uv and set the python version
               uses: astral-sh/setup-uv@v5
               with:
+                  enable-cache: true
                   python-version: ${{ matrix.python-version }}
 
             - uses: actions/checkout@v4
@@ -42,7 +43,7 @@ jobs:
               if: runner.os == 'Linux'
 
             - name: Install package
-              run: uv sync --extra test
+              run: uv sync --extra test --verbose
 
             - name: Install tessdata on Linux
               run: sudo apt-get --no-install-recommends install tesseract-ocr-eng -y
