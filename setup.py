@@ -29,8 +29,9 @@ ext_modules = [
             "extern/tesseract/tesseract-install/include",
         ],
         extra_objects=[
-            "extern/tesseract/tesseract-install/lib/libtesseract.a",
             "extern/leptonica/leptonica-install/lib/libleptonica.a",
+            "extern/libpng/libpng-install/lib/libpng16.a",
+            "extern/tesseract/tesseract-install/lib/libtesseract.a",
         ],
     ),
 ]
