@@ -37,7 +37,7 @@ cd build
 cmake \
     -DCMAKE_INSTALL_PREFIX="$(pwd)/../tesseract-install" \
     -DBUILD_TRAINING_TOOLS=OFF \
-    -DLeptonica_DIR="$(pwd)/../../leptonica/leptonica-install/lib/cmake/Leptonica" \
+    -DLeptonica_DIR="$(pwd)/../../leptonica/leptonica-install/lib/cmake/leptonica" \
     ..
 cmake --build . --target install
 popd
