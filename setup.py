@@ -21,17 +21,18 @@ from pybind11.setup_helpers import Pybind11Extension  # isort:skip
 
 def get_lib_dirs() -> dict[str, str]:
     """Get the library directory names from the build process."""
-    lib_dirs = {"ZLIB_LIB": "lib", "LIBPNG_LIB": "lib", "LEPTONICA_LIB": "lib", "TESSERACT_LIB": "lib"}
-    try:
-        with Path("lib_dirs.txt").open() as f:
-            for line in f:
-                key, value = line.strip().split("=")
-                lib_dirs[key] = value
-    except FileNotFoundError:
-        pass  # Use defaults
+    lib_dirs = {
+        "ZLIB_LIB": "lib",
+        "LIBPNG_LIB": "lib",
+        "LEPTONICA_LIB": "lib",
+        "TESSERACT_LIB": "lib",
+    }
+    with Path("lib_dirs.txt").open() as f:
+        for line in f:
+            key, value = line.strip().split("=")
+            lib_dirs[key] = value
     return lib_dirs
 
-lib_dirs = get_lib_dirs()
 
 ext_modules = [
     Pybind11Extension(
@@ -42,13 +43,6 @@ ext_modules = [
             "extern/leptonica/leptonica-install/include",
             "extern/tesseract/tesseract-install/include",
         ],
-        extra_objects=[
-            # do not change the ordering of these objects
-            f"extern/tesseract/tesseract-install/{lib_dirs['TESSERACT_LIB']}/libtesseract.a",
-            f"extern/leptonica/leptonica-install/{lib_dirs['LEPTONICA_LIB']}/libleptonica.a",
-            f"extern/libpng/libpng-install/{lib_dirs['LIBPNG_LIB']}/libpng16.a",
-            f"extern/zlib/zlib-install/{lib_dirs['ZLIB_LIB']}/libz.a",
-        ],
     ),
 ]
 
@@ -57,6 +51,17 @@ class CustomBuildExt(build_ext):
     def run(self):
         # Build dependencies first
         subprocess.check_call(["./build_dependencies.sh"])
+        # Now that lib_dirs.txt is created, read it and assign extra_objects
+        libs = get_lib_dirs()
+        for ext in self.extensions:
+            if ext.name == "tessbind._core":
+                ext.extra_objects = [
+                    # do not change the ordering of these objects
+                    f"extern/tesseract/tesseract-install/{libs['TESSERACT_LIB']}/libtesseract.a",
+                    f"extern/leptonica/leptonica-install/{libs['LEPTONICA_LIB']}/libleptonica.a",
+                    f"extern/libpng/libpng-install/{libs['LIBPNG_LIB']}/libpng16.a",
+                    f"extern/zlib/zlib-install/{libs['ZLIB_LIB']}/libz.a",
+                ]
         super().run()
 
 
