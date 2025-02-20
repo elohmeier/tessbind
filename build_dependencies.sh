@@ -21,7 +21,7 @@ fi
 cmake \
     -DCMAKE_INSTALL_PREFIX="$(pwd)/../leptonica-install" \
     -DBUILD_PROG=OFF \
-    -DBUILD_SHARED_LIBS=OFF \
+    -DBUILD_SHARED_LIBS=ON \
     -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
     -DENABLE_ZLIB=OFF \
     -DENABLE_GIF=OFF \
