@@ -37,6 +37,10 @@ jobs:
                   fetch-depth: 0
                   submodules: true
 
+            - name: Install build dependencies on Linux
+              run: sudo apt-get --no-install-recommends install libpng-dev -y
+              if: runner.os == 'Linux'
+
             - name: Build dependencies
               run: ./build_dependencies.sh
 
