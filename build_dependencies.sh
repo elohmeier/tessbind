@@ -107,10 +107,3 @@ cmake \
 cmake --build . --target install
 popd
 
-# Create a file to store final lib directory names
-cat >lib_dirs.txt <<EOF
-ZLIB_LIB=${ZLIB_LIB}
-LIBPNG_LIB=${LIBPNG_LIB}
-LEPTONICA_LIB=${LEPTONICA_LIB}
-TESSERACT_LIB=${TESSERACT_LIB}
-EOF

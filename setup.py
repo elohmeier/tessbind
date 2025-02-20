@@ -6,7 +6,6 @@
 from __future__ import annotations
 
 import subprocess
-from pathlib import Path
 
 from setuptools import setup  # isort:skip
 from setuptools.command.build_ext import build_ext
@@ -20,18 +19,27 @@ from pybind11.setup_helpers import Pybind11Extension  # isort:skip
 
 
 def get_lib_dirs() -> dict[str, str]:
-    """Get the library directory names from the build process."""
-    lib_dirs = {
-        "ZLIB_LIB": "lib",
-        "LIBPNG_LIB": "lib",
-        "LEPTONICA_LIB": "lib",
-        "TESSERACT_LIB": "lib",
+    """Detect if we installed libs in lib64 or lib."""
+
+    from pathlib import Path
+
+    zlib_lib = "lib64" if Path("extern/zlib/zlib-install/lib64").exists() else "lib"
+    libpng_lib = (
+        "lib64" if Path("extern/libpng/libpng-install/lib64").exists() else "lib"
+    )
+    leptonica_lib = (
+        "lib64" if Path("extern/leptonica/leptonica-install/lib64").exists() else "lib"
+    )
+    tesseract_lib = (
+        "lib64" if Path("extern/tesseract/tesseract-install/lib64").exists() else "lib"
+    )
+
+    return {
+        "ZLIB_LIB": zlib_lib,
+        "LIBPNG_LIB": libpng_lib,
+        "LEPTONICA_LIB": leptonica_lib,
+        "TESSERACT_LIB": tesseract_lib,
     }
-    with Path("lib_dirs.txt").open() as f:
-        for line in f:
-            key, value = line.strip().split("=")
-            lib_dirs[key] = value
-    return lib_dirs
 
 
 ext_modules = [
