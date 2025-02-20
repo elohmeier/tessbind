@@ -24,14 +24,17 @@ ext_modules = [
         "tessbind._core",
         ["src/main.cpp"],
         cxx_std=11,
-        libraries=["leptonica", "tesseract"],
         include_dirs=[
             "extern/leptonica/leptonica-install/include",
             "extern/tesseract/tesseract-install/include",
         ],
-        library_dirs=[
-            "extern/leptonica/leptonica-install/lib",
-            "extern/tesseract/tesseract-install/lib",
+        extra_objects=[
+            "extern/tesseract/tesseract-install/lib/libtesseract.a",
+            "extern/leptonica/leptonica-install/lib/libleptonica.a",
+        ],
+        # Use dynamic linking for libpng
+        libraries=[
+            "png",
         ],
     ),
 ]
@@ -43,26 +46,9 @@ if sys.platform == "darwin":
         subprocess.check_output(["brew", "--prefix", "libpng"]).decode().strip()
     )
     for ext in ext_modules:
-        # Add RPATH entries
-        ext.extra_link_args = [
-            "-Wl,-rpath,@loader_path/../../extern/leptonica/leptonica-install/lib",
-            "-Wl,-rpath,@loader_path/../../extern/tesseract/tesseract-install/lib",
-        ]
-
         # Add PNG paths
         ext.include_dirs.append(str(Path(png_prefix) / "include"))
         ext.library_dirs.append(str(Path(png_prefix) / "lib"))
-        ext.libraries.append("png")
-elif sys.platform == "linux":
-    for ext in ext_modules:
-        # Add RPATH entries for Linux
-        ext.extra_link_args = [
-            "-Wl,-rpath,$ORIGIN/../../extern/leptonica/leptonica-install/lib",
-            "-Wl,-rpath,$ORIGIN/../../extern/tesseract/tesseract-install/lib",
-        ]
-
-        # On Linux, libpng-dev installs to system paths
-        ext.libraries.append("png")
 
 
 class CustomBuildExt(build_ext):
