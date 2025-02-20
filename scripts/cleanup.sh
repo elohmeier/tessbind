@@ -12,6 +12,7 @@ if [[ "$response" =~ ^[Yy]$ ]]; then
     pushd extern/leptonica && git clean -fdx && popd || exit 1
     pushd extern/libpng && git clean -fdx && popd || exit 1
     pushd extern/tesseract && git clean -fdx && popd || exit 1
+    pushd extern/zlib && git clean -fdx && popd || exit 1
 else
     echo "Cleanup cancelled"
     exit 0
