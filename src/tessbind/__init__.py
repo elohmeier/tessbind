@@ -10,4 +10,4 @@ from ._core import PageSegMode
 from ._version import version as __version__
 from .manager import TessbindManager
 
-__all__ = ["__version__", "PageSegMode", "TessbindManager"]
+__all__ = ["PageSegMode", "TessbindManager", "__version__"]
