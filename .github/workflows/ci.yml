@@ -28,12 +28,12 @@ jobs:
 
         steps:
             - name: Install the latest version of uv and set the python version
-              uses: astral-sh/setup-uv@v5
+              uses: astral-sh/setup-uv@v6
               with:
                   enable-cache: true
                   python-version: ${{ matrix.python-version }}
 
-            - uses: actions/checkout@v4
+            - uses: actions/checkout@v5
               with:
                   fetch-depth: 0
                   submodules: true
@@ -55,6 +55,6 @@ jobs:
                   --durations=20
 
             - name: Upload coverage report
-              uses: codecov/codecov-action@v5.3.1
+              uses: codecov/codecov-action@v5.4.3
               with:
                   token: ${{ secrets.CODECOV_TOKEN }}
