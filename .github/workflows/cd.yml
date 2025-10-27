@@ -24,16 +24,16 @@ jobs:
         runs-on: ubuntu-24.04
         steps:
             - name: Install the latest version of uv
-              uses: astral-sh/setup-uv@v5
+              uses: astral-sh/setup-uv@v7
 
-            - uses: actions/checkout@v4
+            - uses: actions/checkout@v5
               with:
                   fetch-depth: 0
 
             - name: Build SDist
               run: uv build --sdist --verbose
 
-            - uses: actions/upload-artifact@v4
+            - uses: actions/upload-artifact@v5
               with:
                   name: cibw-sdist
                   path: dist/*.tar.gz
@@ -47,15 +47,15 @@ jobs:
                 os: [ubuntu-24.04, ubuntu-24.04-arm, macos-14]
 
         steps:
-            - uses: actions/checkout@v4
+            - uses: actions/checkout@v5
               with:
                   fetch-depth: 0
                   submodules: true
 
-            - uses: pypa/cibuildwheel@v2.22
+            - uses: pypa/cibuildwheel@v3.2
 
             - name: Upload wheels
-              uses: actions/upload-artifact@v4
+              uses: actions/upload-artifact@v5
               with:
                   name: cibw-wheels-${{ matrix.os }}-${{ strategy.job-index }}
                   path: wheelhouse/*.whl
@@ -71,14 +71,14 @@ jobs:
         if: github.event_name == 'release' && github.event.action == 'published'
 
         steps:
-            - uses: actions/download-artifact@v4
+            - uses: actions/download-artifact@v6
               with:
                   pattern: cibw-*
                   path: dist
                   merge-multiple: true
 
             - name: Generate artifact attestations
-              uses: actions/attest-build-provenance@v2.2.0
+              uses: actions/attest-build-provenance@v3.0.0
               with:
                   subject-path: "dist/*"
 
