@@ -5,13 +5,12 @@ description = "Tesseract pybind11 bindings"
 readme = "README.md"
 authors = [{ name = "Enno Richter", email = "enno@nerdworks.de" }]
 requires-python = ">=3.12"
-license = { text = "Apache-2.0" }
+license = "Apache-2.0"
 dependencies = ["typing-extensions>=4.6;python_version<'3.11'"]
 classifiers = [
   "Development Status :: 1 - Planning",
   "Intended Audience :: Developers",
   "Intended Audience :: Science/Research",
-  "License :: OSI Approved :: Apache Software License",
   "Operating System :: OS Independent",
   "Programming Language :: Python",
   "Programming Language :: Python :: 3",
@@ -60,7 +59,7 @@ ignore = [
 
 [tool.cibuildwheel]
 archs = ["auto64"]
-build = ["cp312-*", "cp313-*"]
+build = ["cp312-*", "cp313-*", "cp314-*"]
 skip = "*-musllinux*"
 test-command = "pytest -m \"not slow\" {project}/tests"
 test-extras = ["test"]
