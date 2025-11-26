@@ -23,12 +23,13 @@ jobs:
     name: Make SDist
     runs-on: ubuntu-24.04
     steps:
-      - name: Install the latest version of uv
-        uses: astral-sh/setup-uv@v7
-
       - uses: actions/checkout@v5
         with:
           fetch-depth: 0
+          submodules: true
+
+      - name: Install the latest version of uv
+        uses: astral-sh/setup-uv@v7
 
       - name: Build SDist
         run: uv build --sdist --verbose
