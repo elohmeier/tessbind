@@ -16,4 +16,5 @@ def test_ocr_mgr():
     with m.TessbindManager() as tb:
         s, c = tb.ocr_image_bytes(sample_file.read_bytes())
         assert s == "Hello, World!\n"
-        assert c >= 0.8
+        assert c
+        assert all(80 <= conf <= 100 for conf in c)

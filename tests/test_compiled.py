@@ -5,20 +5,13 @@ from pathlib import Path
 import pytest
 
 import tessbind._core as m
+from tessbind.manager import TessbindManager
 from tessbind.utils import get_tessdata_prefix
 
 try:
     from tqdm.auto import trange
 except ImportError:
     trange = range
-
-
-def test_add():
-    assert m.add(2, 3) == 5
-
-
-def test_subtract():
-    assert m.subtract(7, 5) == 2
 
 
 def test_api_version():
@@ -40,10 +33,30 @@ def test_lowlevel_ocr():
     s = tb.utf8_text
     assert s == "Hello, World!\n"
 
-    c = tb.all_word_confidences
-    assert c > 0.8
+    confidences = tb.all_word_confidences
+    assert confidences
+    assert all(80 <= c <= 100 for c in confidences)
 
     tb.end()
+
+
+def test_manager_roundtrip():
+    sample_file = Path(__file__).parent / "hello.png"
+
+    with TessbindManager() as tm:
+        text, confidences = tm.ocr_image_bytes(sample_file.read_bytes())
+
+    assert text == "Hello, World!\n"
+    assert confidences
+    assert all(80 <= c <= 100 for c in confidences)
+
+
+def test_manager_after_close():
+    tm = TessbindManager()
+    tm.close()
+
+    with pytest.raises(RuntimeError):
+        tm.ocr_image_bytes(b"invalid")
 
 
 @pytest.mark.slow
@@ -63,7 +76,8 @@ def test_many_calls():
         s = tb.utf8_text
         assert s == "Hello, World!\n"
 
-        c = tb.all_word_confidences
-        assert c > 0.8
+        confidences = tb.all_word_confidences
+        assert confidences
+        assert all(0 <= c <= 100 for c in confidences)
 
     tb.end()

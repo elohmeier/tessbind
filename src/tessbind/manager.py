@@ -14,6 +14,10 @@ class RecognitionFailedError(Exception):
         super().__init__("OCR recognition failed.")
 
 
+class TessbindManagerClosedError(RuntimeError):
+    """Raised when operations are attempted on a closed TessbindManager."""
+
+
 class TessbindManager:
     """A context manager for handling Tesseract OCR bindings.
 
@@ -21,8 +25,8 @@ class TessbindManager:
     bindings to the Tesseract OCR engine.
     """
 
-    _api: m.TessBaseAPI
-    """The low-level Tesseract API object."""
+    _api: m.TessBaseAPI | None
+    """The low-level Tesseract API object (None after close)."""
 
     tessdata_prefix: str
     """The path to the Tesseract data directory."""
@@ -61,17 +65,24 @@ class TessbindManager:
         Returns:
             TessbindManager: The initialized TessbindManager object.
         """
+        if self._api is None:
+            message = "Cannot reuse a closed TessbindManager."
+            raise TessbindManagerClosedError(message)
         return self
 
-    def ocr_image_bytes(self, img_bytes: bytes) -> tuple[str, int]:
+    def ocr_image_bytes(self, img_bytes: bytes) -> tuple[str, list[int]]:
         """Perform OCR on an image represented as bytes.
 
         Args:
             img_bytes (bytes): The image data as bytes.
 
         Returns:
-            tuple[str, int]: A tuple containing the OCR text result and the confidence score (0-100).
+            tuple[str, list[int]]: The OCR text result and per-word confidence scores (0-100).
         """
+        if self._api is None:
+            message = "TessbindManager is closed."
+            raise TessbindManagerClosedError(message)
+
         self._api.set_image_from_bytes(img_bytes)
 
         ret = self._api.recognize()
@@ -84,11 +95,17 @@ class TessbindManager:
     @property
     def page_seg_mode(self) -> m.PageSegMode:
         """Get the current page segmentation mode."""
+        if self._api is None:
+            message = "TessbindManager is closed."
+            raise TessbindManagerClosedError(message)
         return self._api.page_seg_mode
 
     @page_seg_mode.setter
     def page_seg_mode(self, value: m.PageSegMode) -> None:
         """Set the page segmentation mode."""
+        if self._api is None:
+            message = "TessbindManager is closed."
+            raise TessbindManagerClosedError(message)
         self._api.page_seg_mode = value
 
     def __exit__(
@@ -104,5 +121,10 @@ class TessbindManager:
             exc_val: The exception value, if an exception was raised.
             exc_tb: The traceback, if an exception was raised.
         """
+        self.close()
+
+    def close(self) -> None:
+        """Release the underlying Tesseract resources."""
         if self._api is not None:
             self._api.end()
+            self._api = None

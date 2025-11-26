@@ -1,34 +1,17 @@
 #include <leptonica/allheaders.h>
 #include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
 #include <tesseract/baseapi.h>
 
 using tesseract::PageSegMode;
 using tesseract::TessBaseAPI;
 
-int add(int i, int j) { return i + j; }
-
 namespace py = pybind11;
 
 PYBIND11_MODULE(_core, m) {
   m.doc() = R"pbdoc(
-      Pybind11 tessbind plugin
-      -----------------------
-      .. currentmodule:: python_example
-      .. autosummary::
-         :toctree: _generate
-         add
-         subtract
+      Pybind11 tessbind bindings
   )pbdoc";
-
-  m.def("add", &add, R"pbdoc(
-      Add two numbers
-      Some other explanation about the add function.
-  )pbdoc");
-
-  m.def("subtract", [](int i, int j) { return i - j; }, R"pbdoc(
-      Subtract two numbers
-      Some other explanation about the subtract function.
-  )pbdoc");
 
   m.def("api_version", &tesseract::TessBaseAPI::Version,
         "Tesseract API version as seen in the library");
@@ -63,8 +46,20 @@ PYBIND11_MODULE(_core, m) {
           },
           "Return all identified text concatenated into a UTF-8 string")
       .def_property_readonly(
-          "all_word_confidences", &TessBaseAPI::AllWordConfidences,
-          R"pbdoc(Read-only: Return all word confidences)pbdoc")
+          "all_word_confidences",
+          [](TessBaseAPI &api) {
+            int *conf = api.AllWordConfidences();
+            if (!conf) {
+              throw std::runtime_error("Failed to get word confidences");
+            }
+            std::vector<int> result;
+            for (int *p = conf; *p != -1; ++p) {
+              result.push_back(*p);
+            }
+            delete[] conf;
+            return result;
+          },
+          R"pbdoc(Read-only: Return all word confidences as a list of integers (0-100))pbdoc")
       .def(
           "set_image_from_bytes",
           [](TessBaseAPI &api, const std::string &image_bytes) {
@@ -76,10 +71,12 @@ PYBIND11_MODULE(_core, m) {
             api.SetImage(image);
             pixDestroy(&image);
           },
-          py::arg("image_bytes"), "Read an image from a string of bytes")
-      .def(
-          "recognize", [](TessBaseAPI *api) { return api->Recognize(nullptr); },
-          "Recognize the text in the image set by SetImage");
+          py::arg("image_bytes"), py::call_guard<py::gil_scoped_release>(),
+          "Read an image from a string of bytes")
+      .def("recognize",
+           [](TessBaseAPI *api) { return api->Recognize(nullptr); },
+           py::call_guard<py::gil_scoped_release>(),
+           "Recognize the text in the image set by SetImage");
 
   py::enum_<PageSegMode>(m, "PageSegMode",
                          "Enumeration of page segmentation settings")

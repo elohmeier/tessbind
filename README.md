@@ -17,7 +17,7 @@ Tesseract language data must be discoverable. If it is not installed in a defaul
 
 ## Usage
 
-`TessbindManager` wraps the underlying API in a context manager and exposes the recognized UTF-8 text plus word confidence:
+`TessbindManager` wraps the underlying API in a context manager and exposes the recognized UTF-8 text plus per-word confidences:
 
 ```python
 from pathlib import Path
@@ -27,10 +27,10 @@ from tessbind import PageSegMode, TessbindManager
 img_bytes = Path("tests/hello.png").read_bytes()
 
 with TessbindManager(lang="eng", page_seg_mode=PageSegMode.SINGLE_LINE) as tb:
-    text, confidence = tb.ocr_image_bytes(img_bytes)
+    text, confidences = tb.ocr_image_bytes(img_bytes)
 
-print(text)        # -> Hello, World!
-print(confidence)  # word-level confidence (higher is better, usually 0-100)
+print(text)         # -> Hello, World!
+print(confidences)  # list of word-level confidences (0-100)
 ```
 
 Use the `page_seg_mode` setter to change segmentation between calls, or omit it to rely on Tesseract's default.
