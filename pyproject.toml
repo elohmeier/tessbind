@@ -47,12 +47,12 @@ write_to = "src/tessbind/_version.py"
 
 [tool.check-manifest]
 ignore = [
+  ".mise.toml",
+  "AGENTS.md",
+  "CLAUDE.md",
   ".copier-answers.yml",
-  ".envrc",
   ".github/**",
   "docs/**",
-  "flake.lock",
-  "flake.nix",
   "noxfile.py",
   "src/*/_version.py",
 ]
