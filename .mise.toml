@@ -1,2 +1,9 @@
 [env]
 _.python.venv = { path = ".venv" }
+
+[tasks.update-extern]
+description = "Sync all extern submodules to their latest remote revisions"
+run = """
+git submodule update --init --recursive --remote \
+  extern/leptonica extern/libpng extern/tesseract extern/zlib
+"""
