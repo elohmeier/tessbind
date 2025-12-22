@@ -23,7 +23,7 @@ jobs:
     name: Make SDist
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
           submodules: true
@@ -34,7 +34,7 @@ jobs:
       - name: Build SDist
         run: uv build --sdist --verbose
 
-      - uses: actions/upload-artifact@v5
+      - uses: actions/upload-artifact@v6
         with:
           name: cibw-sdist
           path: dist/*.tar.gz
@@ -48,15 +48,15 @@ jobs:
         os: [ubuntu-24.04, ubuntu-24.04-arm, macos-14]
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
           submodules: true
 
-      - uses: pypa/cibuildwheel@v3.2
+      - uses: pypa/cibuildwheel@v3.3
 
       - name: Upload wheels
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: cibw-wheels-${{ matrix.os }}-${{ strategy.job-index }}
           path: wheelhouse/*.whl
@@ -72,14 +72,14 @@ jobs:
     if: github.event_name == 'release' && github.event.action == 'published'
 
     steps:
-      - uses: actions/download-artifact@v6
+      - uses: actions/download-artifact@v7
         with:
           pattern: cibw-*
           path: dist
           merge-multiple: true
 
       - name: Generate artifact attestations
-        uses: actions/attest-build-provenance@v3.0.0
+        uses: actions/attest-build-provenance@v3.1.0
         with:
           subject-path: "dist/*"
 
