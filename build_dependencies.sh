@@ -10,6 +10,7 @@ fi
 # Initialize lib directory names (will be updated if lib64 is detected)
 ZLIB_LIB="lib"
 LIBPNG_LIB="lib"
+LIBTIFF_LIB="lib"
 LEPTONICA_LIB="lib"
 TESSERACT_LIB="lib"
 
@@ -57,7 +58,42 @@ fi
 popd
 
 # ---------------------------------------
-# 3. Build & install leptonica
+# 3. Build & install libtiff
+# ---------------------------------------
+pushd extern/libtiff
+mkdir -p _build
+cd _build
+cmake \
+    -DCMAKE_INSTALL_PREFIX="$(pwd)/../libtiff-install" \
+    -DBUILD_SHARED_LIBS=OFF \
+    -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
+    -Dtiff-tools=OFF \
+    -Dtiff-tests=OFF \
+    -Dtiff-contrib=OFF \
+    -Dtiff-docs=OFF \
+    -DZLIB_ROOT="$(pwd)/../../zlib/zlib-install" \
+    -DZLIB_LIBRARY="$(pwd)/../../zlib/zlib-install/${ZLIB_LIB}/libz.a" \
+    -DZLIB_INCLUDE_DIR="$(pwd)/../../zlib/zlib-install/include" \
+    -Djpeg=OFF \
+    -Djbig=OFF \
+    -Dlerc=OFF \
+    -Dlzma=OFF \
+    -Dwebp=OFF \
+    -Dzstd=OFF \
+    -Dlibdeflate=OFF \
+    -DCMAKE_DISABLE_FIND_PACKAGE_OpenGL=TRUE \
+    -DCMAKE_DISABLE_FIND_PACKAGE_GLUT=TRUE \
+    ..
+cmake --build . --target install
+
+# Detect actual lib directory
+if [ -d "../libtiff-install/lib64" ]; then
+    LIBTIFF_LIB="lib64"
+fi
+popd
+
+# ---------------------------------------
+# 4. Build & install leptonica
 # ---------------------------------------
 pushd extern/leptonica
 mkdir -p build
@@ -72,11 +108,13 @@ cmake \
     -DENABLE_PNG=ON \
     -DENABLE_GIF=OFF \
     -DENABLE_JPEG=OFF \
-    -DENABLE_TIFF=OFF \
+    -DENABLE_TIFF=ON \
     -DENABLE_WEBP=OFF \
     -DENABLE_OPENJPEG=OFF \
     -DPNG_LIBRARY="$(pwd)/../../libpng/libpng-install/${LIBPNG_LIB}/libpng.a" \
     -DPNG_PNG_INCLUDE_DIR="$(pwd)/../../libpng/libpng-install/include" \
+    -DTIFF_LIBRARY="$(pwd)/../../libtiff/libtiff-install/${LIBTIFF_LIB}/libtiff.a" \
+    -DTIFF_INCLUDE_DIR="$(pwd)/../../libtiff/libtiff-install/include" \
     -DZLIB_LIBRARY="$(pwd)/../../zlib/zlib-install/${ZLIB_LIB}/libz.a" \
     -DZLIB_INCLUDE_DIR="$(pwd)/../../zlib/zlib-install/include" \
     ..
@@ -89,7 +127,7 @@ fi
 popd
 
 # ---------------------------------------
-# 4. Build & install tesseract (library only)
+# 5. Build & install tesseract (library only)
 # ---------------------------------------
 pushd extern/tesseract
 mkdir -p build
@@ -100,7 +138,7 @@ cmake \
     -DBUILD_SHARED_LIBS=OFF \
     -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
     -DDISABLE_CURL=ON \
-    -DDISABLE_TIFF=ON \
+    -DDISABLE_TIFF=OFF \
     -DDISABLE_ARCHIVE=ON \
     -DLeptonica_DIR="$(pwd)/../../leptonica/leptonica-install/${LEPTONICA_LIB}/cmake/leptonica" \
     ..
