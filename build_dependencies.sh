@@ -99,6 +99,7 @@ cmake \
     -DZLIB_INCLUDE_DIR="$(pwd)/../../zlib/zlib-install/include" \
     -Djpeg=ON \
     -Djpeg12=OFF \
+    -DHAVE_JPEGTURBO_DUAL_MODE_8_12=FALSE \
     -DJPEG_LIBRARY="$(pwd)/../../libjpeg-turbo/libjpeg-turbo-install/${LIBJPEG_LIB}/libjpeg.a" \
     -DJPEG_INCLUDE_DIR="$(pwd)/../../libjpeg-turbo/libjpeg-turbo-install/include" \
     -Djbig=OFF \
