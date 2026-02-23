@@ -1,6 +1,6 @@
 [project]
 name = "tessbind"
-dynamic = ["version"]
+version = "0.15.0"
 description = "Tesseract pybind11 bindings"
 readme = "README.md"
 authors = [{ name = "Enno Richter", email = "enno@nerdworks.de" }]
@@ -39,11 +39,15 @@ docs = [
 test = ["pytest>=6", "pytest-cov>=3"]
 
 [build-system]
-requires = ["setuptools>=42", "setuptools_scm[toml]>=3.4", "pybind11"]
+requires = ["setuptools>=42", "pybind11"]
 build-backend = "setuptools.build_meta"
 
-[tool.setuptools_scm]
-write_to = "src/tessbind/_version.py"
+[tool.semantic_release]
+version_toml = ["pyproject.toml:project.version"]
+build_command = """
+    uv lock --upgrade-package tessbind
+    git add uv.lock
+"""
 
 [tool.check-manifest]
 ignore = [
@@ -54,7 +58,6 @@ ignore = [
   ".github/**",
   "docs/**",
   "noxfile.py",
-  "src/*/_version.py",
 ]
 
 [tool.cibuildwheel]
@@ -147,7 +150,6 @@ isort.required-imports = ["from __future__ import annotations"]
 
 [tool.pylint]
 py-version = "3.8"
-ignore-paths = [".*/_version.py"]
 extension-pkg-allow-list = ["tessbind._core"]
 reports.output-format = "colorized"
 similarities.ignore-imports = "yes"
