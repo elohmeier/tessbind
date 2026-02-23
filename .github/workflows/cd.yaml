@@ -29,7 +29,7 @@ jobs:
 
     steps:
       - name: Setup | Checkout Repository on Release Branch
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           ref: ${{ github.event.workflow_run.head_branch }}
           fetch-depth: 0
@@ -110,18 +110,12 @@ jobs:
     runs-on: ubuntu-24.04
 
     steps:
-<<<<<<< Updated upstream
-      - uses: actions/download-artifact@v7
-||||||| Stash base
-      - uses: actions/download-artifact@v6
-=======
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           ref: ${{ needs.release.outputs.tag }}
           fetch-depth: 0
 
-      - uses: actions/download-artifact@v6
->>>>>>> Stashed changes
+      - uses: actions/download-artifact@v7
         with:
           pattern: cibw-*
           path: dist
