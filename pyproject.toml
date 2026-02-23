@@ -1,6 +1,6 @@
 [project]
 name = "tessbind"
-version = "1.1.0"
+version = "1.2.0"
 description = "Tesseract pybind11 bindings"
 readme = "README.md"
 authors = [{ name = "Enno Richter", email = "enno@nerdworks.de" }]
