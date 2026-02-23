@@ -112,7 +112,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
         with:
-          ref: ${{ needs.release.outputs.tag }}
+          ref: ${{ github.event.workflow_run.head_branch }}
           fetch-depth: 0
 
       - uses: actions/download-artifact@v7
