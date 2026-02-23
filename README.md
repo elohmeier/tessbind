@@ -1,9 +1,12 @@
 # tessbind
 
-[![Actions Status][actions-badge]][actions-link]
+[![CI][ci-badge]][ci-link]
+[![CD][cd-badge]][cd-link]
+[![codecov][codecov-badge]][codecov-link]
 
 [![PyPI version][pypi-version]][pypi-link]
 [![PyPI platforms][pypi-platforms]][pypi-link]
+[![License][license-badge]][license-link]
 
 Python 3.12+ bindings for Tesseract built with pybind11. The package vendors the native dependencies (leptonica, libpng, zlib) so you only need Tesseract's trained data files available at runtime.
 
@@ -43,10 +46,16 @@ Use the `page_seg_mode` setter to change segmentation between calls, or omit it 
 <!-- SPHINX-START -->
 
 <!-- prettier-ignore-start -->
-[actions-badge]:            https://github.com/elohmeier/tessbind/workflows/CI/badge.svg
-[actions-link]:             https://github.com/elohmeier/tessbind/actions
-[pypi-link]:                https://pypi.org/project/tessbind/
-[pypi-platforms]:           https://img.shields.io/pypi/pyversions/tessbind
-[pypi-version]:             https://img.shields.io/pypi/v/tessbind
+[ci-badge]:       https://github.com/elohmeier/tessbind/actions/workflows/ci.yaml/badge.svg
+[ci-link]:        https://github.com/elohmeier/tessbind/actions/workflows/ci.yaml
+[cd-badge]:       https://github.com/elohmeier/tessbind/actions/workflows/cd.yaml/badge.svg
+[cd-link]:        https://github.com/elohmeier/tessbind/actions/workflows/cd.yaml
+[codecov-badge]:  https://codecov.io/gh/elohmeier/tessbind/graph/badge.svg
+[codecov-link]:   https://codecov.io/gh/elohmeier/tessbind
+[pypi-link]:      https://pypi.org/project/tessbind/
+[pypi-platforms]: https://img.shields.io/pypi/pyversions/tessbind
+[pypi-version]:   https://img.shields.io/pypi/v/tessbind
+[license-badge]:  https://img.shields.io/pypi/l/tessbind
+[license-link]:   https://github.com/elohmeier/tessbind/blob/master/LICENSE
 
 <!-- prettier-ignore-end -->
