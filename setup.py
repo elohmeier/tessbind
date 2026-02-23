@@ -27,6 +27,11 @@ def get_lib_dirs() -> dict[str, str]:
     libpng_lib = (
         "lib64" if Path("extern/libpng/libpng-install/lib64").exists() else "lib"
     )
+    libjpeg_lib = (
+        "lib64"
+        if Path("extern/libjpeg-turbo/libjpeg-turbo-install/lib64").exists()
+        else "lib"
+    )
     libtiff_lib = (
         "lib64" if Path("extern/libtiff/libtiff-install/lib64").exists() else "lib"
     )
@@ -40,6 +45,7 @@ def get_lib_dirs() -> dict[str, str]:
     return {
         "ZLIB_LIB": zlib_lib,
         "LIBPNG_LIB": libpng_lib,
+        "LIBJPEG_LIB": libjpeg_lib,
         "LIBTIFF_LIB": libtiff_lib,
         "LEPTONICA_LIB": leptonica_lib,
         "TESSERACT_LIB": tesseract_lib,
@@ -71,6 +77,7 @@ class CustomBuildExt(build_ext):
                     # do not change the ordering of these objects
                     f"extern/tesseract/tesseract-install/{libs['TESSERACT_LIB']}/libtesseract.a",
                     f"extern/leptonica/leptonica-install/{libs['LEPTONICA_LIB']}/libleptonica.a",
+                    f"extern/libjpeg-turbo/libjpeg-turbo-install/{libs['LIBJPEG_LIB']}/libjpeg.a",
                     f"extern/libtiff/libtiff-install/{libs['LIBTIFF_LIB']}/libtiff.a",
                     f"extern/libpng/libpng-install/{libs['LIBPNG_LIB']}/libpng16.a",
                     f"extern/zlib/zlib-install/{libs['ZLIB_LIB']}/libz.a",

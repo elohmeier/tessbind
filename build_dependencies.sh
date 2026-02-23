@@ -10,6 +10,7 @@ fi
 # Initialize lib directory names (will be updated if lib64 is detected)
 ZLIB_LIB="lib"
 LIBPNG_LIB="lib"
+LIBJPEG_LIB="lib"
 LIBTIFF_LIB="lib"
 LEPTONICA_LIB="lib"
 TESSERACT_LIB="lib"
@@ -58,7 +59,29 @@ fi
 popd
 
 # ---------------------------------------
-# 3. Build & install libtiff
+# 3. Build & install libjpeg-turbo
+# ---------------------------------------
+pushd extern/libjpeg-turbo
+mkdir -p build
+cd build
+cmake \
+    -DCMAKE_INSTALL_PREFIX="$(pwd)/../libjpeg-turbo-install" \
+    -DBUILD_SHARED_LIBS=OFF \
+    -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
+    -DENABLE_SHARED=OFF \
+    -DENABLE_STATIC=ON \
+    -DWITH_TURBOJPEG=OFF \
+    ..
+cmake --build . --target install
+
+# Detect actual lib directory
+if [ -d "../libjpeg-turbo-install/lib64" ]; then
+    LIBJPEG_LIB="lib64"
+fi
+popd
+
+# ---------------------------------------
+# 4. Build & install libtiff
 # ---------------------------------------
 pushd extern/libtiff
 mkdir -p _build
@@ -74,7 +97,9 @@ cmake \
     -DZLIB_ROOT="$(pwd)/../../zlib/zlib-install" \
     -DZLIB_LIBRARY="$(pwd)/../../zlib/zlib-install/${ZLIB_LIB}/libz.a" \
     -DZLIB_INCLUDE_DIR="$(pwd)/../../zlib/zlib-install/include" \
-    -Djpeg=OFF \
+    -Djpeg=ON \
+    -DJPEG_LIBRARY="$(pwd)/../../libjpeg-turbo/libjpeg-turbo-install/${LIBJPEG_LIB}/libjpeg.a" \
+    -DJPEG_INCLUDE_DIR="$(pwd)/../../libjpeg-turbo/libjpeg-turbo-install/include" \
     -Djbig=OFF \
     -Dlerc=OFF \
     -Dlzma=OFF \
@@ -93,7 +118,7 @@ fi
 popd
 
 # ---------------------------------------
-# 4. Build & install leptonica
+# 5. Build & install leptonica
 # ---------------------------------------
 pushd extern/leptonica
 mkdir -p build
@@ -107,10 +132,12 @@ cmake \
     -DENABLE_ZLIB=ON \
     -DENABLE_PNG=ON \
     -DENABLE_GIF=OFF \
-    -DENABLE_JPEG=OFF \
+    -DENABLE_JPEG=ON \
     -DENABLE_TIFF=ON \
     -DENABLE_WEBP=OFF \
     -DENABLE_OPENJPEG=OFF \
+    -DJPEG_LIBRARY="$(pwd)/../../libjpeg-turbo/libjpeg-turbo-install/${LIBJPEG_LIB}/libjpeg.a" \
+    -DJPEG_INCLUDE_DIR="$(pwd)/../../libjpeg-turbo/libjpeg-turbo-install/include" \
     -DPNG_LIBRARY="$(pwd)/../../libpng/libpng-install/${LIBPNG_LIB}/libpng.a" \
     -DPNG_PNG_INCLUDE_DIR="$(pwd)/../../libpng/libpng-install/include" \
     -DTIFF_LIBRARY="$(pwd)/../../libtiff/libtiff-install/${LIBTIFF_LIB}/libtiff.a" \
@@ -127,7 +154,7 @@ fi
 popd
 
 # ---------------------------------------
-# 5. Build & install tesseract (library only)
+# 6. Build & install tesseract (library only)
 # ---------------------------------------
 pushd extern/tesseract
 mkdir -p build

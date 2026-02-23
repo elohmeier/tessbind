@@ -13,3 +13,6 @@
 [submodule "extern/libtiff"]
 	path = extern/libtiff
 	url = https://github.com/libsdl-org/libtiff.git
+[submodule "extern/libjpeg-turbo"]
+	path = extern/libjpeg-turbo
+	url = https://github.com/libjpeg-turbo/libjpeg-turbo.git
