@@ -106,11 +106,22 @@ jobs:
     permissions:
       id-token: write
       attestations: write
-      contents: read
+      contents: write
     runs-on: ubuntu-24.04
 
     steps:
+<<<<<<< Updated upstream
       - uses: actions/download-artifact@v7
+||||||| Stash base
+      - uses: actions/download-artifact@v6
+=======
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ needs.release.outputs.tag }}
+          fetch-depth: 0
+
+      - uses: actions/download-artifact@v6
+>>>>>>> Stashed changes
         with:
           pattern: cibw-*
           path: dist
