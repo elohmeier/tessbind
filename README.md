@@ -2,7 +2,6 @@
 
 [![CI][ci-badge]][ci-link]
 [![CD][cd-badge]][cd-link]
-[![codecov][codecov-badge]][codecov-link]
 
 [![PyPI version][pypi-version]][pypi-link]
 [![PyPI platforms][pypi-platforms]][pypi-link]
@@ -50,8 +49,6 @@ Use the `page_seg_mode` setter to change segmentation between calls, or omit it 
 [ci-link]:        https://github.com/elohmeier/tessbind/actions/workflows/ci.yaml
 [cd-badge]:       https://github.com/elohmeier/tessbind/actions/workflows/cd.yaml/badge.svg
 [cd-link]:        https://github.com/elohmeier/tessbind/actions/workflows/cd.yaml
-[codecov-badge]:  https://codecov.io/gh/elohmeier/tessbind/graph/badge.svg
-[codecov-link]:   https://codecov.io/gh/elohmeier/tessbind
 [pypi-link]:      https://pypi.org/project/tessbind/
 [pypi-platforms]: https://img.shields.io/pypi/pyversions/tessbind
 [pypi-version]:   https://img.shields.io/pypi/v/tessbind
