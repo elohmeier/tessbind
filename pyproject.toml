@@ -1,6 +1,6 @@
 [project]
 name = "tessbind"
-version = "1.0.0"
+version = "0.15.0"
 description = "Tesseract pybind11 bindings"
 readme = "README.md"
 authors = [{ name = "Enno Richter", email = "enno@nerdworks.de" }]
@@ -43,6 +43,7 @@ requires = ["setuptools>=42", "pybind11"]
 build-backend = "setuptools.build_meta"
 
 [tool.semantic_release]
+allow_zero_version = true
 version_toml = ["pyproject.toml:project.version"]
 build_command = """
     uv lock --upgrade-package tessbind
