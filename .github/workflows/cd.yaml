@@ -72,7 +72,7 @@ jobs:
       - name: Build SDist
         run: uv build --sdist --verbose
 
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@v7
         with:
           name: cibw-sdist
           path: dist/*.tar.gz
@@ -97,7 +97,7 @@ jobs:
       - uses: pypa/cibuildwheel@v3.3
 
       - name: Upload wheels
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: cibw-wheels-${{ matrix.os }}-${{ strategy.job-index }}
           path: wheelhouse/*.whl
@@ -118,14 +118,14 @@ jobs:
           ref: ${{ github.event.workflow_run.head_branch }}
           fetch-depth: 0
 
-      - uses: actions/download-artifact@v7
+      - uses: actions/download-artifact@v8
         with:
           pattern: cibw-*
           path: dist
           merge-multiple: true
 
       - name: Generate artifact attestations
-        uses: actions/attest-build-provenance@v3.1.0
+        uses: actions/attest-build-provenance@v4.1.0
         with:
           subject-path: "dist/*"
 
